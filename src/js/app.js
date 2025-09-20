@@ -64,7 +64,6 @@ function setSettingsToDefaultIfRequired(force) {
         Settings.option("token", null)
         Settings.option("url", null)
         Settings.option("hideUE", null)
-        Settings.option("conversationAgent",  null)
     }
 }
 function bringSettingsUpToDate() {
@@ -74,8 +73,8 @@ function bringSettingsUpToDate() {
     if (Settings.data('ui_show_scenes') == null) { Settings.data('ui_show_scenes', true) }
     //1.3:
     if (Settings.option('ui_show_assist') == null) { Settings.option('ui_show_assist', true) }
-    //1.4:
-    if (Settings.option('conversationAgent') == null) { Settings.option('conversationAgent', "home_assistant") }
+    //1.5:
+    if (Settings.option('conversationAgent') == null) { Settings.option('conversationAgent', 'home_assistant') }
 }
 
 //Unused rn
@@ -163,7 +162,7 @@ function go() {
 
     if (emulator_hax == true) {
 
-        hass.init("$INSTANCE","$KEY");
+        hass.init("$INSTANCE","$KEY","$AGENT");
         renderHomeMenu(true)
 
     } else {
@@ -192,7 +191,7 @@ function renderHomeMenu(hasConfig) {
         //If we're here, we have enough settings to start
         
         if (! emulator_hax) {
-            hass.init(Settings.option("url"), Settings.option("token"))
+            hass.init(Settings.option("url"), Settings.option("token"), Settings.option("conversationAgent"))
         }
 
         if (Settings.option('ui_show_assist') == true) { homeItems.push({ title: "Assistant" }) }
@@ -279,7 +278,7 @@ function showFirstTimeRunScreen() {
 function showAboutScreen() {
     var aboutScreen = new UI.Card({
         title: 'Home Assistant',
-        body: 'Version: ' + version + '\nAuthor: @Will0\nYour Instance:\n' + Settings.option("url") + '\n\nBuilt with love as part of Rebble Hackathon #001! See:\n willow.systems/ha\n for info\n\nLong Press Select to full reset app.',
+        body: 'Version: ' + version + '\nAuthor: @Will0\nYour Instance:\n' + Settings.option("url")  + '\nAuthor: @Will0\nConversation Agent:\n' + Settings.option("conversationAgent") + '\n\nBuilt with love as part of Rebble Hackathon #001! See:\n willow.systems/ha\n for info\n\nLong Press Select to full reset app.',
         style: "small",
         scrollable: true
     });
@@ -395,7 +394,7 @@ function doAssistantVoice() {
         } else {
             var speech = dict.transcription;
             addVoiceBubble(speech, "in")
-            addVoiceBubble("°°°", "out")
+            addVoiceBubble("Â°Â°Â°", "out")
             Voice.dictate('stop');
             hass.process_voice_intent(speech, function (data) {
                 var resp = data.response.speech.plain.speech;
@@ -428,7 +427,8 @@ function validateSettings() {
     if (Settings.option("conversationAgent") == null)  {
         console.log("conversationAgent unset")
         return false
-    console.log("Minimum settings present. Good to go.")
+    }
+   console.log("Minimum settings present. Good to go.")
     return true
 }
 Settings.config({ url: getConfigURL() },
@@ -1524,7 +1524,7 @@ function showVacuumDetailWindow(entity) {
     if (entity.attributes.hasOwnProperty("status")) { vacText = vacText + entity.attributes.status + "\n\n" }
     if (entity.attributes.hasOwnProperty("fan_speed")) { vacText = vacText + "Fan: " + entity.attributes.fan_speed + "\n" }
     if (entity.attributes.hasOwnProperty("battery_level")) { vacText = vacText + "Battery: " + entity.attributes.battery_level + "%\n" }
-    if (entity.attributes.hasOwnProperty("water_tank") && entity.attributes.water_tank == true) { vacText = vacText + "Water Tank 👍\n" }
+    if (entity.attributes.hasOwnProperty("water_tank") && entity.attributes.water_tank == true) { vacText = vacText + "Water Tank ðŸ‘\n" }
 
     var vacStatus = new UI.Text({
         text: vacText,
@@ -1584,7 +1584,7 @@ function refreshVacuumDetailWindow(statusLabel, entity_id) {
         if (entity.attributes.hasOwnProperty("status")) { vacText = vacText + entity.attributes.status + "\n\n" }
         if (entity.attributes.hasOwnProperty("fan_speed")) { vacText = vacText + "Fan: " + entity.attributes.fan_speed + "\n" }
         if (entity.attributes.hasOwnProperty("battery_level")) { vacText = vacText + "Battery: " + entity.attributes.battery_level + "%\n" }
-        if (entity.attributes.hasOwnProperty("water_tank") && entity.attributes.water_tank == true) { vacText = vacText + "Water Tank 👍\n" }
+        if (entity.attributes.hasOwnProperty("water_tank") && entity.attributes.water_tank == true) { vacText = vacText + "Water Tank ðŸ‘\n" }
         statusLabel.text(vacText)
     })
 
