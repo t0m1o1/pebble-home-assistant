@@ -64,6 +64,7 @@ function setSettingsToDefaultIfRequired(force) {
         Settings.option("token", null)
         Settings.option("url", null)
         Settings.option("hideUE", null)
+        Settings.option("conversationAgent",  null)
     }
 }
 function bringSettingsUpToDate() {
@@ -73,6 +74,8 @@ function bringSettingsUpToDate() {
     if (Settings.data('ui_show_scenes') == null) { Settings.data('ui_show_scenes', true) }
     //1.3:
     if (Settings.option('ui_show_assist') == null) { Settings.option('ui_show_assist', true) }
+    //1.4:
+    if (Settings.option('conversationAgent') == null) { Settings.option('conversationAgent', "home_assistant") }
 }
 
 //Unused rn
@@ -422,6 +425,9 @@ function validateSettings() {
         console.log("hideUE unset")
         return false
     }
+    if (Settings.option("conversationAgent") == null)  {
+        console.log("conversationAgent unset")
+        return false
     console.log("Minimum settings present. Good to go.")
     return true
 }
@@ -453,7 +459,7 @@ Settings.config({ url: getConfigURL() },
             go()
         } else {
             //Change config, silent update
-            hass.init(Settings.option("url"), Settings.option("token"))
+            hass.init(Settings.option("url"), Settings.option("token"), Settings.option("conversationAgent"))
         }
       }
     }
