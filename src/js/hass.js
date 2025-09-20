@@ -3,13 +3,15 @@ var UI = require('ui');
 
 var env = {
     token: "",
-    serverAddress: ""
+    serverAddress: "",
+    conversationAgent: ""
 }
 
-function init(url, token) {
+function init(url, token, agent) {
     console.log("Init hass runtime, using instance @ " + url)
     env.serverAddress = url
     env.token = token
+    env.conversationAgent = agent
 }
 
 function log(text, verboseOnly) {
@@ -201,7 +203,8 @@ function process_voice_intent(text, cb) {
 
     console.log("[hass] Process intent: " )
     var data = {
-        text: text
+        text: text,
+        agent_id: env.conversationAgent
     };
     var path = "/conversation/process"
 
