@@ -11,7 +11,7 @@ function init(url, token, agent) {
     console.log("Init hass runtime, using instance @ " + url)
     env.serverAddress = url
     env.token = token
-    env.conversationAgent = agent
+    env.conversationAgent = "conversation." + agent
 }
 
 function log(text, verboseOnly) {
